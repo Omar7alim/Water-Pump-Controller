@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Water Pump Controller</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#003b8e,#0077ff);
+  color:white;
+
+  /* ✅ fade in/out */
+  opacity:0;
+  animation:fadeIn 0.6s ease forwards;
+  transition:opacity 0.6s ease;
+}
+
+@keyframes fadeIn{
+  to{ opacity:1; }
+}
+
+/* ✅ trigger fade-out */
+body.fade-out{
+  opacity:0;
+}
+
+/* Header */
+header{
+  padding:20px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* buttons container */
+.nav{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+header h1{
+  font-size:22px;
+}
+
+header button{
+  padding:10px 20px;
+  background:#002f6c;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* Hero Section */
+.hero{
+  padding:80px 40px;
+  text-align:center;
+}
+
+.hero h2{
+  font-size:36px;
+  margin-bottom:20px;
+}
+
+.hero p{
+  max-width:700px;
+  margin:auto;
+  font-size:16px;
+  line-height:1.6;
+}
+
+/* Features */
+.features{
+  background:rgba(255,255,255,0.12);
+  margin:40px;
+  padding:40px;
+  border-radius:20px;
+}
+
+.features h3{
+  text-align:center;
+  margin-bottom:30px;
+  font-size:24px;
+}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:20px;
+}
+
+.feature{
+  background:rgba(0,0,0,0.15);
+  padding:20px;
+  border-radius:14px;
+}
+
+.feature h4{
+  margin-bottom:10px;
+}
+
+/* Footer */
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:12px;
+  opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>💧 Water Pump Controller</h1>
+
+  <div class="nav">
+    <!-- ✅ use fade-out navigation -->
+    <button onclick="navigateWithFade('Login page.html')">Login</button>
+    <button onclick="navigateWithFade('About page.html')">About</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h2>Smart Water Pump Management System</h2>
+  <p>
+    A web-based platform designed to monitor, control, and optimize water pump
+    stations automatically. The system adjusts pump operation based on real-time
+    water level and flow requirements, reducing human effort, energy consumption,
+    and equipment failure.
+  </p>
+</section>
+
+<section class="features">
+  <h3>System Features</h3>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <h4>⚙️ Automated Control</h4>
+      <p>
+        Automatically controls pump operation, speed, and power to reach the
+        required water level efficiently.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h4>📊 Real-Time Monitoring</h4>
+      <p>
+        Engineers can monitor water level, flow rate, power usage, and pump status
+        through a single web interface.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h4>⏱️ Lifetime Tracking</h4>
+      <p>
+        Tracks operating hours of each pump component and alerts users before
+        maintenance limits are reached.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h4>🚨 Alert System</h4>
+      <p>
+        Provides warning, maintenance, and emergency alerts to prevent failures
+        and system overloads.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h4>🧠 Smart Calculation</h4>
+      <p>
+        Uses both empirical mathematical methods and trial-and-error techniques
+        to calculate required water flow accurately.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h4>👥 Role-Based Access</h4>
+      <p>
+        Different access levels for administrators, engineers, and viewers to
+        ensure secure and controlled system usage.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Water Pump Controller Project | Smart Infrastructure Solution
+</footer>
+
+<script>
+/* ✅ Fade-out then navigate */
+function navigateWithFade(url){
+  document.body.classList.add("fade-out");
+  setTimeout(() => {
+    window.location.href = url;
+  }, 600); // same as transition time
+}
+
+/* optional: your old function (kept) */
+function handleLogin(){
+  if(localStorage.getItem("isLoggedIn") === "true"){
+    navigateWithFade("Dahboard.html");
+  }else{
+    navigateWithFade("Login page.html");
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About-Water Pump Controller</title>
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --card: rgba(255,255,255,0.06);
+      --card2: rgba(255,255,255,0.08);
+      --text: #eaf0ff;
+      --muted: rgba(234,240,255,0.75);
+      --line: rgba(234,240,255,0.16);
+      --accent: #5cc8ff;
+      --accent2: #7ef0c1;
+      --danger: #ff5c5c;
+      --warn: #ffcc66;
+      --ok: #67e480;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+
+    [data-theme="light"]{
+      --bg: #f6f7fb;
+      --card: rgba(0,0,0,0.04);
+      --card2: rgba(0,0,0,0.06);
+      --text: #0b1220;
+      --muted: rgba(11,18,32,0.7);
+      --line: rgba(11,18,32,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    *{ box-sizing: border-box; }
+
+    /* ✅ Smooth theme transition (Dark ↔ Light) */
+    html, body, .hero, .card, .accordion, .kpi, .btn, .pill, .badge, .acc-panel{
+      transition:
+        background-color 300ms ease,
+        color 300ms ease,
+        border-color 300ms ease,
+        box-shadow 300ms ease;
+    }
+    body{ transition: background 350ms ease, color 300ms ease; }
+    @media (prefers-reduced-motion: reduce){
+      *{ transition: none !important; animation: none !important; }
+    }
+
+    /* ✅ Fade-in on page load */
+    body.is-loading .container{
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .container{
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 600ms ease, transform 600ms ease;
+    }
+
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(92,200,255,0.18), transparent 60%),
+                  radial-gradient(900px 500px at 90% 20%, rgba(126,240,193,0.14), transparent 55%),
+                  radial-gradient(900px 500px at 50% 90%, rgba(255,92,92,0.10), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a{ color: inherit; }
+    .container{
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    header{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand{ display: flex; align-items: center; gap: 12px; }
+
+    .logo{
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(92,200,255,1), rgba(126,240,193,1));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute;
+      inset:-30px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.55), transparent 55%);
+      transform: rotate(20deg);
+    }
+
+    .title-wrap h1{
+      font-size: clamp(20px, 2.6vw, 30px);
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+    .title-wrap p{
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn{
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      transition: transform .12s ease, background .12s ease;
+      user-select: none;
+    }
+    .btn:hover{ transform: translateY(-1px); background: var(--card2); }
+    .btn:active{ transform: translateY(0px); }
+    .btn small{ color: var(--muted); }
+
+    .hero{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--card2), var(--card));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 900px){ .hero{ grid-template-columns: 1fr; } }
+
+    .hero h2{ margin: 0 0 8px; font-size: 20px; }
+    .hero p{ margin: 0; line-height: 1.6; color: var(--muted); }
+
+    .kpis{ display: grid; grid-template-columns: 1fr; gap: 10px; align-content: start; }
+    .kpi{
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 12px;
+      display:flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .kpi span{ color: var(--muted); font-size: 13px; }
+    .kpi strong{ font-size: 13px; font-weight: 700; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .card h3{ margin: 0 0 10px; font-size: 16px; }
+
+    ul{ margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.6; }
+    li{ margin: 6px 0; }
+
+    .badge-row{ display:flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .badge{
+      border: 1px solid var(--line);
+      background: var(--card2);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .accordion{
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .acc-item + .acc-item{ border-top: 1px solid var(--line); }
+    .acc-btn{
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      background: transparent;
+      border: 0;
+      color: var(--text);
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+    }
+    .acc-btn span{ color: var(--muted); font-size: 12px; margin-left: 8px; }
+    .acc-panel{
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.02));
+    }
+    .acc-panel-inner{
+      padding: 0 16px 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+    [data-theme="light"] .acc-panel{ background: linear-gradient(180deg, transparent, rgba(0,0,0,0.03)); }
+
+    .chev{
+      width: 12px;
+      height: 12px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform .2s ease;
+      margin-left: 10px;
+      flex: 0 0 auto;
+    }
+    .open .chev{ transform: rotate(-135deg); }
+
+    footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .status{ display:flex; gap: 8px; flex-wrap: wrap; align-items:center; }
+    .pill{
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .dot{ width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+    .dot.warn{ background: var(--warn); }
+    .dot.danger{ background: var(--danger); }
+  </style>
+</head>
+
+<!-- ✅ add loading class so we can animate in -->
+<body class="is-loading">
+  <div class="container" id="app">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title-wrap">
+          <h1>Water Pump Controller</h1>
+          <p>About the system - monitoring, automation, and safety</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="toggleTheme" type="button" aria-label="Toggle theme">
+          🌗 <small id="themeLabel">Dark</small>
+        </button>
+        <button class="btn" id="printPage" type="button">
+          🖨️ <small>Print</small>
+        </button>
+        <button class="btn" onclick="window.location.href='Home page ignited.html'">
+          🏠 <small>Home</small>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h2>Overview</h2>
+        <p>
+          The <strong>Water Pump Controller System</strong> is a web-based platform that monitors and controls
+          pump station operations using real-time sensor data. It maintains the required water level efficiently
+          while reducing manual effort, human error, and operational costs.
+        </p>
+
+        <div class="badge-row" aria-label="Highlights">
+          <div class="badge">Web Dashboard</div>
+          <div class="badge">Real-time Sensors</div>
+          <div class="badge">Auto & Manual Control</div>
+          <div class="badge">Safety Checks</div>
+          <div class="badge">Alerts & Maintenance</div>
+        </div>
+      </div>
+
+      <div class="kpis" aria-label="System summary">
+        <div class="kpi"><span>Control Modes</span><strong>Auto / Manual</strong></div>
+        <div class="kpi"><span>Live Data</span><strong>Level · Flow · Pump Status</strong></div>
+        <div class="kpi"><span>Monitoring</span><strong>Lifetime Hours Tracking</strong></div>
+        <div class="kpi"><span>Alerts</span><strong>Warning · Maintenance · Emergency</strong></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Key Features</h3>
+        <ul>
+          <li>Live dashboard for water level, flow rate, and pump status.</li>
+          <li>Automatic control: computes required level/flow and optimizes pump operation.</li>
+          <li>Manual control: engineers can select a pump and set ON/OFF, speed, and power.</li>
+          <li>Safety checks to prevent operation beyond safe limits.</li>
+          <li>Lifetime monitoring with maintenance notifications when hour limits are reached.</li>
+          <li>Alert system for warning, maintenance, and emergency events.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Hardware & Platform Components</h3>
+        <ul>
+          <li>Water pump(s)</li>
+          <li>Water level sensors</li>
+          <li>Flow sensors</li>
+          <li>Speed & power sensors</li>
+          <li>ESP32 microcontroller</li>
+          <li>Web platform (website + dashboard)</li>
+        </ul>
+
+        <div class="badge-row">
+          <div class="badge">ESP32</div>
+          <div class="badge">Sensors</div>
+          <div class="badge">Remote Monitoring</div>
+          <div class="badge">Control Logic</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion" aria-label="More details">
+      <div class="acc-item">
+        <button class="acc-btn" type="button">
+          How the system works <span>flow of operation</span>
+          <i class="chev" aria-hidden="true"></i>
+        </button>
+        <div class="acc-panel"><div class="acc-panel-inner">
+          The system reads sensor values continuously, then updates the dashboard with live information.
+          In <strong>Auto Mode</strong>, it calculates the required water level and flow, selects the number of pumps,
+          adjusts speed and power, performs safety checks, and runs pumps accordingly.
+          In <strong>Manual Mode</strong>, an engineer selects a pump and sets ON/OFF, speed, and power,
+          then the system validates safety before executing the command.
+        </div></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" type="button">
+          Flow calculation methods <span>empirical + trial & error</span>
+          <i class="chev" aria-hidden="true"></i>
+        </button>
+        <div class="acc-panel"><div class="acc-panel-inner">
+          The system can estimate required flow using two approaches:
+          <ul>
+            <li><strong>Empirical (Mathematical) Method:</strong> uses hydraulic equations and known system parameters.</li>
+            <li><strong>Trial & Error Method:</strong> starts at low speed then increases/decreases based on sensor feedback until targets are reached.</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" type="button">
+          Monitoring & maintenance <span>lifetime tracking</span>
+          <i class="chev" aria-hidden="true"></i>
+        </button>
+        <div class="acc-panel"><div class="acc-panel-inner">
+          Each pump component has an expected lifetime measured in operating hours.
+          The platform records operating time automatically and generates maintenance alerts when limits are reached,
+          helping reduce downtime and increase reliability.
+        </div></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" type="button">
+          Alerts & safety <span>warning / maintenance / emergency</span>
+          <i class="chev" aria-hidden="true"></i>
+        </button>
+        <div class="acc-panel"><div class="acc-panel-inner">
+          The alert system identifies events and notifies the engineer:
+          <div class="status" style="margin-top:10px;">
+            <div class="pill"><span class="dot warn"></span> Warning: high usage</div>
+            <div class="pill"><span class="dot"></span> Maintenance: before failure</div>
+            <div class="pill"><span class="dot danger"></span> Emergency: overload/malfunction</div>
+          </div>
+          In emergency cases, the system can stop the pump to prevent damage and keep the station safe.
+        </div></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" type="button">
+          Future improvements <span>next steps</span>
+          <i class="chev" aria-hidden="true"></i>
+        </button>
+        <div class="acc-panel"><div class="acc-panel-inner">
+          Planned future development includes:
+          <ul>
+            <li>AI-based optimization of pump operation.</li>
+            <li>Predictive maintenance using data analytics.</li>
+            <li>Mobile application integration.</li>
+            <li>Smart city system integration.</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" type="button">
+          References (PWA essentials) <span>official docs</span>
+          <i class="chev" aria-hidden="true"></i>
+        </button>
+        <div class="acc-panel"><div class="acc-panel-inner">
+          If you will ship this site as a PWA, these official resources help:
+          <ul>
+            <li><a href="https://web.dev/learn/pwa/progressive-web-apps" target="_blank" rel="noopener">Progressive Web Apps — web.dev</a></li>
+            <li><a href="https://web.dev/articles/add-manifest" target="_blank" rel="noopener">Add a web app manifest — web.dev</a></li>
+            <li><a href="https://web.dev/learn/pwa/service-workers" target="_blank" rel="noopener">Service workers — web.dev</a></li>
+            <li><a href="https://web.dev/articles/why-https-matters" target="_blank" rel="noopener">Why HTTPS matters — web.dev</a></li>
+          </ul>
+        </div></div>
+      </div>
+    </section>
+
+    <footer>
+      <div>
+        <strong>Water Pump Controller</strong> · <span id="year"></span>
+        <div style="margin-top:6px;">Built for monitoring, control, and safer operation.</div>
+      </div>
+      <div class="status">
+        <div class="pill"><span class="dot"></span> System status: demo</div>
+        <div class="pill">Mode: <span id="modeLabel">Auto/Manual</span></div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Theme toggle (saved in localStorage)
+    const root = document.documentElement;
+    const themeBtn = document.getElementById("toggleTheme");
+    const themeLabel = document.getElementById("themeLabel");
+
+    function applyTheme(theme){
+      root.setAttribute("data-theme", theme);
+      themeLabel.textContent = theme === "light" ? "Light" : "Dark";
+      localStorage.setItem("theme", theme);
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    applyTheme(savedTheme);
+
+    themeBtn.addEventListener("click", () => {
+      const current = root.getAttribute("data-theme") || "dark";
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+
+    // Print
+    document.getElementById("printPage").addEventListener("click", () => window.print());
+
+    // Accordion behavior
+    const items = document.querySelectorAll(".acc-item");
+    items.forEach(item => {
+      const btn = item.querySelector(".acc-btn");
+      const panel = item.querySelector(".acc-panel");
+
+      btn.addEventListener("click", () => {
+        const isOpen = item.classList.contains("open");
+
+        items.forEach(i => {
+          i.classList.remove("open");
+          i.querySelector(".acc-panel").style.maxHeight = null;
+        });
+
+        if (!isOpen) {
+          item.classList.add("open");
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+      });
+    });
+
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("modeLabel").textContent = "Auto / Manual";
+
+    // ✅ Trigger fade-in after page is ready
+    window.addEventListener("DOMContentLoaded", () => {
+      // small delay makes it feel smoother
+      setTimeout(() => document.body.classList.remove("is-loading"), 60);
+    });
+  </script>
+</body>
+</html>

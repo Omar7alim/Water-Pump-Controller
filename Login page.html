@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Water Pump Controller - Login</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI,sans-serif;
+}
+
+body{
+  height:100vh;
+  background:linear-gradient(135deg,#003b8e,#0077ff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  animation:fadeIn 0.6s ease forwards;
+  position: relative; /* ✅ to place button at page corner */
+}
+
+@keyframes fadeIn{
+  to{ opacity:1; }
+}
+
+/* ✅ Home button: top-right of the PAGE (not the card) */
+.home-btn{
+  position: fixed;       /* stays at the corner even if you scroll */
+  top:20px;
+  right:20px;
+  padding:10px 20px;     /* same size as previous buttons */
+  background:#002f6c;
+  color:white;
+  border:none;
+  border-radius:8px;     /* same shape */
+  cursor:pointer;
+  font-size:14px;
+  width:auto;
+  z-index: 9999;
+}
+
+.login-card{
+  width:320px;
+  background:rgba(255,255,255,.12);
+  padding:30px;
+  border-radius:18px;
+  color:white;
+}
+
+.login-card h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+label{ font-size:12px; }
+
+input{
+  width:100%;
+  padding:10px;
+  margin:6px 0 14px;
+  border:none;
+  border-radius:6px;
+}
+
+.forgot{
+  font-size:12px;
+  display:block;
+  margin-bottom:15px;
+  cursor:pointer;
+}
+
+.signin-btn{
+  width:100%;
+  padding:10px;
+  background:#002f6c;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.message{
+  font-size:12px;
+  margin-top:10px;
+  text-align:center;
+}
+.error{ color:#ffb3b3; }
+.success{ color:#b3ffcc; }
+</style>
+</head>
+
+<body>
+  
+  <button class="home-btn" onclick="window.location.href='index.html'">🏠 Home</button>
+
+  <div class="login-card">
+    <h2>Water Pump Controller</h2>
+    <label>User ID</label>
+    <input type="text" id="userId" placeholder="Enter User ID">
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Password">
+
+    <span class="forgot">Forgot Password?</span>
+
+    <button class="signin-btn" onclick="validateLogin()">Sign in</button>
+    <p id="message" class="message"></p>
+  </div>
+
+<script>
+const users = [
+  { userId: "Omar",    password: "Pump@123", role: "admin" },
+  { userId: "Yazeed",  password: "Pump@123", role: "engineer" },
+  { userId: "Hammad",  password: "Pump@123", role: "engineer" },
+  { userId: "Jonierr", password: "Pump@123", role: "viewer" }
+];
+
+function validateLogin() {
+  const userId = document.getElementById("userId").value;
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
+
+  const userIdRegex = /^[a-zA-Z0-9]+$/;
+  const capitalLetter = /[A-Z]/;
+  const specialChar = /[^a-zA-Z0-9]/;
+
+  if (!userIdRegex.test(userId)) {
+    message.textContent = "User ID must contain only letters and numbers.";
+    message.className = "message error";
+    return;
+  }
+
+  if (!capitalLetter.test(password) || !specialChar.test(password)) {
+    message.textContent = "Password must include a capital letter and a special character.";
+    message.className = "message error";
+    return;
+  }
+
+  const foundUser = users.find(user => user.userId === userId);
+  if (!foundUser) {
+    message.textContent = "User ID not found. Access denied.";
+    message.className = "message error";
+    return;
+  }
+
+  if (foundUser.password !== password) {
+    message.textContent = "Incorrect password.";
+    message.className = "message error";
+    return;
+  }
+
+  message.textContent = "Login successful! Redirecting...";
+  message.className = "message success";
+
+  localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("userName", foundUser.userId);
+  localStorage.setItem("userRole", foundUser.role);
+
+  setTimeout(() => {
+    window.location.href = "Dashboard.html";
+  }, 1000);
+}
+</script>
+</body>
+</html>
