@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Water Pump Controller - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue-deep:#0a1628;
+  --blue-bright:#1a73e8;
+  --cyan:#00d4ff;
+  --white:white;
+  --white-80:rgba(255,255,255,0.8);
+  --white-40:rgba(255,255,255,0.4);
+  --white-10:rgba(255,255,255,0.1);
+  --white-06:rgba(255,255,255,0.06);
+  --card-border:rgba(255,255,255,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  background:var(--blue-deep);
+  color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;animation:fadeIn 0.7s ease forwards;
+  overflow:hidden;
+}
+body.fade-out{opacity:0;transition:opacity 0.5s ease;}
+@keyframes fadeIn{to{opacity:1;}}
+
+.bg-orbs{position:fixed;inset:0;pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.35;}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,#1a73e8,transparent);top:-150px;left:-150px;animation:float1 12s ease-in-out infinite;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,#00d4ff,transparent);bottom:-100px;right:-100px;animation:float2 15s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(40px,30px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-30px,20px);}}
+
+.bg-grid{
+  position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* Home button */
+.home-btn{
+  position:fixed;top:20px;right:20px;
+  padding:10px 18px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--card-border);
+  color:var(--white-80);border-radius:10px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  display:flex;align-items:center;gap:6px;
+  transition:all 0.2s;z-index:100;backdrop-filter:blur(10px);
+}
+.home-btn:hover{background:var(--white-10);color:white;border-color:rgba(0,212,255,0.3);}
+
+.login-wrap{
+  position:relative;z-index:1;
+  width:100%;max-width:400px;
+  padding:24px;
+}
+
+.login-brand{
+  text-align:center;margin-bottom:36px;
+}
+.brand-icon{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg,var(--blue-bright),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  margin:0 auto 14px;
+  box-shadow:0 0 30px rgba(0,212,255,0.35);
+}
+.brand-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:22px;margin-bottom:4px;}
+.brand-title span{color:var(--cyan);}
+.brand-sub{color:var(--white-40);font-size:14px;}
+
+.login-card{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  padding:32px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 24px 64px rgba(0,0,0,0.4);
+}
+
+.field-label{
+  font-size:12px;font-weight:600;letter-spacing:0.5px;
+  color:var(--white-40);text-transform:uppercase;
+  margin-bottom:8px;display:block;
+}
+.field-input{
+  width:100%;padding:12px 16px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--card-border);
+  border-radius:12px;color:var(--white);
+  font-family:'DM Sans',sans-serif;font-size:15px;
+  transition:all 0.2s;outline:none;margin-bottom:18px;
+}
+.field-input:focus{border-color:var(--cyan);background:rgba(0,212,255,0.05);box-shadow:0 0 0 3px rgba(0,212,255,0.1);}
+.field-input::placeholder{color:var(--white-40);}
+
+.forgot{
+  font-size:13px;color:var(--cyan);cursor:pointer;
+  display:block;text-align:right;margin-top:-10px;margin-bottom:20px;
+  text-decoration:none;opacity:0.8;
+  transition:opacity 0.2s;
+}
+.forgot:hover{opacity:1;}
+
+.signin-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--blue-bright),#00b4e6);
+  color:white;border:none;border-radius:12px;
+  font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;
+  cursor:pointer;letter-spacing:0.3px;
+  box-shadow:0 4px 20px rgba(0,212,255,0.25);
+  transition:all 0.2s;
+}
+.signin-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,212,255,0.35);}
+.signin-btn:active{transform:translateY(0);}
+
+.message{
+  font-size:13px;margin-top:14px;text-align:center;
+  border-radius:8px;padding:10px;display:none;
+}
+.message.show{display:block;}
+.error{background:rgba(255,60,60,0.12);border:1px solid rgba(255,60,60,0.3);color:#ff8080;}
+.success{background:rgba(0,220,120,0.12);border:1px solid rgba(0,220,120,0.3);color:#00e080;}
+</style>
+</head>
+<body>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+</div>
+<div class="bg-grid"></div>
+
+<button class="home-btn" onclick="navigateWithFade('index.html')">🏠 Home</button>
+
+<div class="login-wrap">
+  <div class="login-brand">
+    <div class="brand-icon">💧</div>
+    <div class="brand-title">Water<span>Pump</span></div>
+    <div class="brand-sub">Controller System — Sign In</div>
+  </div>
+
+  <div class="login-card">
+    <label class="field-label">User ID</label>
+    <input class="field-input" type="text" id="userId" placeholder="Enter your user ID">
+
+    <label class="field-label">Password</label>
+    <input class="field-input" type="password" id="password" placeholder="Enter password">
+
+    <span class="forgot">Forgot Password?</span>
+
+    <button class="signin-btn" onclick="validateLogin()">Sign In →</button>
+    <div id="message" class="message"></div>
+  </div>
+</div>
+
+<script>
+const users = [
+  { userId:"Omar",    password:"Pump@123", role:"admin" },
+  { userId:"Yazeed",  password:"Pump@123", role:"engineer" },
+  { userId:"Hammad",  password:"Pump@123", role:"engineer" },
+  { userId:"Jonierr", password:"Pump@123", role:"viewer" }
+];
+
+function showMsg(text, type){
+  const m = document.getElementById("message");
+  m.textContent = text;
+  m.className = `message show ${type}`;
+}
+
+function validateLogin(){
+  const userId = document.getElementById("userId").value.trim();
+  const password = document.getElementById("password").value;
+  const userIdRegex = /^[a-zA-Z0-9]+$/;
+  const capitalLetter = /[A-Z]/;
+  const specialChar = /[^a-zA-Z0-9]/;
+
+  if(!userIdRegex.test(userId)) return showMsg("User ID must contain only letters and numbers.", "error");
+  if(!capitalLetter.test(password) || !specialChar.test(password))
+    return showMsg("Password must include a capital letter and special character.", "error");
+
+  const foundUser = users.find(u => u.userId === userId);
+  if(!foundUser) return showMsg("User ID not found. Access denied.", "error");
+  if(foundUser.password !== password) return showMsg("Incorrect password.", "error");
+
+  showMsg("Login successful! Redirecting…", "success");
+  localStorage.setItem("isLoggedIn","true");
+  localStorage.setItem("userName",foundUser.userId);
+  localStorage.setItem("userRole",foundUser.role);
+
+  setTimeout(()=>{ window.location.href = "Dashboard.html"; }, 1000);
+}
+
+// Enter key support
+document.addEventListener("keydown", e => { if(e.key==="Enter") validateLogin(); });
+
+function navigateWithFade(url){
+  document.body.classList.add("fade-out");
+  setTimeout(()=>{ window.location.href = url; }, 500);
+}
+</script>
+</body>
+</html>

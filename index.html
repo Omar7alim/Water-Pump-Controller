@@ -2,220 +2,430 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Water Pump Controller</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Segoe UI, sans-serif;
+:root {
+  --blue-deep: #0a1628;
+  --blue-mid: #0d2248;
+  --blue-bright: #1a73e8;
+  --cyan: #00d4ff;
+  --cyan-soft: rgba(0,212,255,0.15);
+  --white: #ffffff;
+  --white-80: rgba(255,255,255,0.8);
+  --white-40: rgba(255,255,255,0.4);
+  --white-10: rgba(255,255,255,0.1);
+  --white-06: rgba(255,255,255,0.06);
+  --card-bg: rgba(255,255,255,0.07);
+  --card-border: rgba(255,255,255,0.12);
 }
+
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
+  font-family:'DM Sans',sans-serif;
   min-height:100vh;
-  background:linear-gradient(135deg,#003b8e,#0077ff);
-  color:white;
-
-  /* ✅ fade in/out */
+  background:var(--blue-deep);
+  color:var(--white);
+  overflow-x:hidden;
   opacity:0;
-  animation:fadeIn 0.6s ease forwards;
-  transition:opacity 0.6s ease;
+  animation:fadeIn 0.7s ease forwards;
+}
+body.fade-out{opacity:0;transition:opacity 0.5s ease;}
+@keyframes fadeIn{to{opacity:1;}}
+
+/* Animated background */
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.4;}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,#1a73e8,transparent);top:-200px;left:-200px;animation:float1 12s ease-in-out infinite;}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,#00d4ff,transparent);bottom:-150px;right:-100px;animation:float2 15s ease-in-out infinite;}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,#0077cc,transparent);top:40%;left:50%;animation:float3 10s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(60px,40px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-50px,30px);}}
+@keyframes float3{0%,100%{transform:translate(-50%,-50%);}50%{transform:translate(calc(-50% + 40px),calc(-50% - 30px));}}
+
+/* Grid pattern overlay */
+.bg-grid{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
 }
 
-@keyframes fadeIn{
-  to{ opacity:1; }
-}
+.container{position:relative;z-index:1;}
 
-/* ✅ trigger fade-out */
-body.fade-out{
-  opacity:0;
-}
-
-/* Header */
+/* HEADER */
 header{
-  padding:20px 40px;
+  padding:20px 48px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  border-bottom:1px solid var(--card-border);
+  backdrop-filter:blur(20px);
+  background:rgba(10,22,40,0.6);
+  position:sticky;top:0;z-index:100;
 }
 
-/* buttons container */
-.nav{
-  display:flex;
-  gap:12px;
-  align-items:center;
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-icon{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--blue-bright),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 0 20px rgba(0,212,255,0.4);
 }
+.brand-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.3px;}
+.brand-name span{color:var(--cyan);}
 
-header h1{
-  font-size:22px;
-}
-
-header button{
-  padding:10px 20px;
-  background:#002f6c;
-  color:white;
-  border:none;
-  border-radius:8px;
+.nav{display:flex;gap:8px;align-items:center;}
+.nav-btn{
+  padding:9px 20px;
+  border:1px solid var(--card-border);
+  background:var(--white-06);
+  color:var(--white);
+  border-radius:10px;
   cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;
+  transition:all 0.2s ease;
+  backdrop-filter:blur(10px);
 }
+.nav-btn:hover{background:var(--white-10);border-color:var(--cyan);color:var(--cyan);}
+.nav-btn.primary{
+  background:linear-gradient(135deg,var(--blue-bright),#0d5fc2);
+  border-color:transparent;
+}
+.nav-btn.primary:hover{filter:brightness(1.1);color:var(--white);}
 
-/* Hero Section */
+/* HERO */
 .hero{
-  padding:80px 40px;
-  text-align:center;
+  padding:100px 48px 80px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+  max-width:1300px;
+  margin:0 auto;
 }
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:60px 24px;}}
 
-.hero h2{
-  font-size:36px;
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);
+  color:var(--cyan);border-radius:999px;padding:6px 16px;
+  font-size:13px;font-weight:500;margin-bottom:24px;
+}
+.hero-tag::before{content:'';width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.5);}}
+
+.hero-title{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(36px,5vw,60px);
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-1px;
   margin-bottom:20px;
 }
-
-.hero p{
-  max-width:700px;
-  margin:auto;
-  font-size:16px;
-  line-height:1.6;
+.hero-title .gradient{
+  background:linear-gradient(135deg,var(--cyan),var(--blue-bright));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 
-/* Features */
-.features{
-  background:rgba(255,255,255,0.12);
-  margin:40px;
-  padding:40px;
-  border-radius:20px;
+.hero-desc{
+  color:var(--white-80);
+  font-size:16px;line-height:1.7;
+  margin-bottom:36px;max-width:520px;
 }
 
-.features h3{
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-hero{
+  padding:14px 28px;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all 0.2s ease;border:none;
+}
+.btn-hero.primary{
+  background:linear-gradient(135deg,var(--blue-bright),#00b4e6);
+  color:white;
+  box-shadow:0 4px 24px rgba(0,212,255,0.3);
+}
+.btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,212,255,0.4);}
+.btn-hero.ghost{
+  background:var(--white-06);border:1px solid var(--card-border);color:var(--white-80);
+}
+.btn-hero.ghost:hover{background:var(--white-10);color:white;}
+
+/* HERO VISUAL */
+.hero-visual{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.visual-card{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  padding:28px;
+  backdrop-filter:blur(20px);
+  width:100%;max-width:380px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.vc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.vc-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;}
+.vc-status{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,200,100,0.15);border:1px solid rgba(0,200,100,0.3);
+  color:#00e080;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;
+}
+.vc-status::before{content:'';width:6px;height:6px;background:#00e080;border-radius:50%;}
+
+.vc-gauge{
+  position:relative;width:160px;height:80px;margin:0 auto 24px;overflow:hidden;
+}
+.vc-gauge svg{width:100%;height:100%;}
+
+.vc-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.metric{
+  background:rgba(255,255,255,0.05);border:1px solid var(--card-border);
+  border-radius:12px;padding:12px;
+}
+.metric-val{font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;color:var(--cyan);}
+.metric-lbl{font-size:11px;color:var(--white-40);margin-top:2px;}
+
+/* STATS BAR */
+.stats-bar{
+  margin:0 48px 60px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  max-width:calc(1300px - 96px);
+  margin-left:auto;margin-right:auto;
+}
+@media(max-width:900px){.stats-bar{grid-template-columns:1fr 1fr;margin:0 24px 40px;}}
+.stat-card{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-radius:16px;padding:20px;
+  backdrop-filter:blur(10px);
+  transition:transform 0.2s,border-color 0.2s;
+}
+.stat-card:hover{transform:translateY(-3px);border-color:rgba(0,212,255,0.3);}
+.stat-num{font-family:'Outfit',sans-serif;font-weight:800;font-size:28px;color:var(--cyan);margin-bottom:4px;}
+.stat-lbl{font-size:13px;color:var(--white-40);}
+
+/* FEATURES */
+.features-section{
+  padding:0 48px 80px;
+  max-width:1300px;margin:0 auto;
+}
+@media(max-width:900px){.features-section{padding:0 24px 60px;}}
+
+.section-label{
   text-align:center;
-  margin-bottom:30px;
-  font-size:24px;
+  font-size:13px;color:var(--cyan);font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:12px;
+}
+.section-title{
+  text-align:center;
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(28px,4vw,42px);
+  margin-bottom:12px;letter-spacing:-0.5px;
+}
+.section-sub{
+  text-align:center;color:var(--white-40);
+  font-size:15px;max-width:500px;margin:0 auto 48px;
 }
 
 .feature-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns:repeat(3,1fr);
   gap:20px;
 }
+@media(max-width:900px){.feature-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.feature-grid{grid-template-columns:1fr;}}
 
-.feature{
-  background:rgba(0,0,0,0.15);
-  padding:20px;
-  border-radius:14px;
+.feature-card{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-radius:20px;padding:28px;
+  backdrop-filter:blur(10px);
+  transition:all 0.25s ease;
+  position:relative;overflow:hidden;
 }
-
-.feature h4{
-  margin-bottom:10px;
+.feature-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,212,255,0.05),transparent);
+  opacity:0;transition:opacity 0.3s;
 }
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(0,212,255,0.3);}
+.feature-card:hover::after{opacity:1;}
 
-/* Footer */
+.feat-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(26,115,232,0.2));
+  border:1px solid rgba(0,212,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:16px;
+}
+.feat-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;margin-bottom:8px;}
+.feat-desc{color:var(--white-40);font-size:14px;line-height:1.6;}
+
+/* FOOTER */
 footer{
-  text-align:center;
-  padding:20px;
-  font-size:12px;
-  opacity:0.8;
+  border-top:1px solid var(--card-border);
+  padding:24px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  color:var(--white-40);font-size:13px;
 }
 </style>
 </head>
-
 <body>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="bg-grid"></div>
 
+<div class="container">
 <header>
-  <h1>💧 Water Pump Controller</h1>
-
-  <div class="nav">
-    <!-- ✅ use fade-out navigation -->
-    <button onclick="navigateWithFade('Login page.html')">Login</button>
-    <button onclick="navigateWithFade('About page.html')">About</button>
+  <div class="brand">
+    <div class="brand-icon">💧</div>
+    <div class="brand-name">Water<span>Pump</span> Controller</div>
   </div>
+  <nav class="nav">
+    <button class="nav-btn" onclick="navigateWithFade('Login_page.html')">Login</button>
+    <button class="nav-btn" onclick="navigateWithFade('About_page.html')">About</button>
+    <button class="nav-btn primary" onclick="navigateWithFade('Login_page.html')">Launch Dashboard →</button>
+  </nav>
 </header>
 
 <section class="hero">
-  <h2>Smart Water Pump Management System</h2>
-  <p>
-    A web-based platform designed to monitor, control, and optimize water pump
-    stations automatically. The system adjusts pump operation based on real-time
-    water level and flow requirements, reducing human effort, energy consumption,
-    and equipment failure.
-  </p>
+  <div class="hero-left">
+    <div class="hero-tag">● Live Monitoring System</div>
+    <h1 class="hero-title">
+      Smart Water Pump<br><span class="gradient">Management Platform</span>
+    </h1>
+    <p class="hero-desc">
+      A real-time web platform that monitors, controls, and optimizes pump stations automatically.
+      Reduce energy waste, prevent failures, and ensure reliable water distribution.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-hero primary" onclick="navigateWithFade('Login_page.html')">Get Started</button>
+      <button class="btn-hero ghost" onclick="navigateWithFade('About_page.html')">Learn More</button>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="visual-card">
+      <div class="vc-header">
+        <div class="vc-title">System Overview</div>
+        <div class="vc-status">Online</div>
+      </div>
+
+      <div class="vc-gauge">
+        <svg viewBox="0 0 160 80">
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#1a73e8"/>
+              <stop offset="100%" stop-color="#00d4ff"/>
+            </linearGradient>
+          </defs>
+          <!-- Background arc -->
+          <path d="M 15 75 A 65 65 0 0 1 145 75" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" stroke-linecap="round"/>
+          <!-- Fill arc (70%) -->
+          <path d="M 15 75 A 65 65 0 0 1 145 75" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"
+                stroke-dasharray="204" stroke-dashoffset="61" style="transition:stroke-dashoffset 1s ease;"/>
+          <text x="80" y="68" text-anchor="middle" fill="#00d4ff" font-size="20" font-family="Outfit" font-weight="800">70%</text>
+          <text x="80" y="78" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="8" font-family="DM Sans">WATER LEVEL</text>
+        </svg>
+      </div>
+
+      <div class="vc-metrics">
+        <div class="metric">
+          <div class="metric-val">18.4</div>
+          <div class="metric-lbl">Flow m³/h</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">3.2</div>
+          <div class="metric-lbl">Power kW</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">2/2</div>
+          <div class="metric-lbl">Pumps Active</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val" style="color:#00e080;">Good</div>
+          <div class="metric-lbl">System Health</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="features">
-  <h3>System Features</h3>
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-num">2</div>
+    <div class="stat-lbl">Active Pumps</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">Real-Time</div>
+    <div class="stat-lbl">Live Monitoring</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">3-Tier</div>
+    <div class="stat-lbl">Role-Based Access</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">Auto</div>
+    <div class="stat-lbl">Intelligent Control</div>
+  </div>
+</div>
+
+<section class="features-section">
+  <div class="section-label">Capabilities</div>
+  <h2 class="section-title">Everything You Need</h2>
+  <p class="section-sub">Comprehensive tools to keep your water infrastructure running at peak performance.</p>
 
   <div class="feature-grid">
-    <div class="feature">
-      <h4>⚙️ Automated Control</h4>
-      <p>
-        Automatically controls pump operation, speed, and power to reach the
-        required water level efficiently.
-      </p>
+    <div class="feature-card">
+      <div class="feat-icon">⚙️</div>
+      <div class="feat-title">Automated Control</div>
+      <div class="feat-desc">Automatically adjusts pump speed and power to reach the required water level efficiently.</div>
     </div>
-
-    <div class="feature">
-      <h4>📊 Real-Time Monitoring</h4>
-      <p>
-        Engineers can monitor water level, flow rate, power usage, and pump status
-        through a single web interface.
-      </p>
+    <div class="feature-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Real-Time Monitoring</div>
+      <div class="feat-desc">Track water level, flow rate, power usage, and pump status through a unified dashboard.</div>
     </div>
-
-    <div class="feature">
-      <h4>⏱️ Lifetime Tracking</h4>
-      <p>
-        Tracks operating hours of each pump component and alerts users before
-        maintenance limits are reached.
-      </p>
+    <div class="feature-card">
+      <div class="feat-icon">⏱️</div>
+      <div class="feat-title">Lifetime Tracking</div>
+      <div class="feat-desc">Records operating hours per component and alerts before maintenance limits are reached.</div>
     </div>
-
-    <div class="feature">
-      <h4>🚨 Alert System</h4>
-      <p>
-        Provides warning, maintenance, and emergency alerts to prevent failures
-        and system overloads.
-      </p>
+    <div class="feature-card">
+      <div class="feat-icon">🚨</div>
+      <div class="feat-title">Smart Alert System</div>
+      <div class="feat-desc">Warning, maintenance, and emergency alerts to prevent failures and system overloads.</div>
     </div>
-
-    <div class="feature">
-      <h4>🧠 Smart Calculation</h4>
-      <p>
-        Uses both empirical mathematical methods and trial-and-error techniques
-        to calculate required water flow accurately.
-      </p>
+    <div class="feature-card">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-title">Smart Calculation</div>
+      <div class="feat-desc">Uses empirical and trial-and-error methods to calculate water flow requirements accurately.</div>
     </div>
-
-    <div class="feature">
-      <h4>👥 Role-Based Access</h4>
-      <p>
-        Different access levels for administrators, engineers, and viewers to
-        ensure secure and controlled system usage.
-      </p>
+    <div class="feature-card">
+      <div class="feat-icon">👥</div>
+      <div class="feat-title">Role-Based Access</div>
+      <div class="feat-desc">Separate access levels for admins, engineers, and viewers for secure system control.</div>
     </div>
   </div>
 </section>
 
 <footer>
-  © 2026 Water Pump Controller Project | Smart Infrastructure Solution
+  <div>© 2026 Water Pump Controller · Smart Infrastructure Solution</div>
+  <div>Built with precision for water management</div>
 </footer>
+</div>
 
 <script>
-/* ✅ Fade-out then navigate */
 function navigateWithFade(url){
   document.body.classList.add("fade-out");
-  setTimeout(() => {
-    window.location.href = url;
-  }, 600); // same as transition time
-}
-
-/* optional: your old function (kept) */
-function handleLogin(){
-  if(localStorage.getItem("isLoggedIn") === "true"){
-    navigateWithFade("Dahboard.html");
-  }else{
-    navigateWithFade("Login page.html");
-  }
+  setTimeout(()=>{ window.location.href = url; }, 500);
 }
 </script>
-
 </body>
 </html>
